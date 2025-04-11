@@ -1,3 +1,5 @@
+# InfoGrabber? 
+
 This project is a lightweight browser-based information collector that gathers client-side data such as IP details, device specifications, browser metadata, and cookies. It packages the data into a ZIP file and sends it via a webhook.
 
 > ⚠️ **Disclaimer:** This project is intended for **educational** and **ethical** use only. Do **not** deploy or use this script on websites without clear user consent. Violating privacy laws or terms of service can result in legal consequences.
