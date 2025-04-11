@@ -46,7 +46,7 @@ Replace "webhook_url" with your actual webhook URL (such as a Discord webhook).
 ### 🚀 Deploy to the Web
 You can host this project for free using platforms like Vercel or Netlify.
 
-# ❗ Ethical Use Reminder
+## ❗ Ethical Use Reminder
 
 #### This tool is intended for:
 
@@ -59,4 +59,4 @@ You can host this project for free using platforms like Vercel or Netlify.
 **Do not use this tool for malicious purposes or without clear, informed consent from users.**
 
 ### 📄 License
-**This project is open-source under the MIT License.**
+This project is open-source under the **MIT License**.
