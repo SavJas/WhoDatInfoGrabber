@@ -31,8 +31,7 @@ This project is a lightweight browser-based information collector that gathers c
 ### 1. Clone the Repository
 
 ```bash
-[git clone https://github.com/yourusername/web-info-collector.git
-cd web-info-collector](https://github.com/SavJas/WhoDatInfoGrabber.git)
+https://github.com/SavJas/WhoDatInfoGrabber.git
 ```
 
 ### 2. Replace the Webhook
